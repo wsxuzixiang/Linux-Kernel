@@ -5,11 +5,14 @@
 #include<sys/ioctl.h>
 #include<errno.h>
 #include"hello_chr_locked.h"
+
 int main(int argc ,char* argv[])
 {
 	int n,retval=0;
 	int fd;
+
 	fd = open("/dev/hc_dev0",O_RDWR);
+    
 	switch(argv[1][0])
 	{
 		case '0':

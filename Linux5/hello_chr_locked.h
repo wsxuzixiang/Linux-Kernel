@@ -1,7 +1,7 @@
 #ifndef _HELLO_CHR_LOCKED_H_
 #define _HELLO_CHR_LOCKED_H_
 
-/* 幻数，查看 /Documentation/userspace-api/ioctl/ioctl-number.rst */
+/* 幻数 */
 #define HC_IOC_MAGIC 0x81
 
 /* 清空分配的空间 */

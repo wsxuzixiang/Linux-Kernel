@@ -117,12 +117,19 @@ long hc_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 	long retval = 0;
 	int tmp,err=0;
 	
-	if (_IOC_TYPE(cmd) != HC_IOC_MAGIC) return -ENOTTY;	//检查幻数(返回值POSIX标准规定，也用-EINVAL)
-	if (_IOC_NR(cmd) > HC_IOC_MAXNR) return -ENOTTY;	//检查命令编号
+    /* 检查幻数 */
+	if (_IOC_TYPE(cmd) != HC_IOC_MAGIC) 
+        return -ENOTTY;
+
+    /* 检查命令编号 */
+	if (_IOC_NR(cmd) > HC_IOC_MAXNR) 
+        return -ENOTTY;	
 	
-	if (_IOC_DIR(cmd) & _IOC_READ)		//涉及到用户空间与内核空间数据交互，判断读OK吗？
+    /* 检查用户空间地址是否是用 */
+	if (_IOC_DIR(cmd) & _IOC_READ)
 		err = !access_ok(VERIFY_WRITE, (void __user *)arg, _IOC_SIZE(cmd));
-	if (err) return -EFAULT;
+	if (err) 
+        return -EFAULT;
 	
 	switch(cmd){
 		case HC_IOC_RESET:
@@ -143,7 +150,6 @@ long hc_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 			if (! capable (CAP_SYS_ADMIN))
 				return -EPERM;			
 			retval = get_user(tmp,(int __user *)arg);			
-			//hc_dev->n = min(hc_dev->n,tmp);
 			if(hc_dev->n>tmp)
 				hc_dev->n=tmp;
 			printk(KERN_INFO " %d\n",hc_dev->n);
@@ -155,7 +161,7 @@ long hc_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 			hc_dev->n = min(hc_dev->n,(int)arg);
 			printk(KERN_INFO " %d\n",hc_dev->n);
 			break;
-		default:	//前面做了cmd的检查，这里可以不需要
+		default:
 			break;
 	}
 	
